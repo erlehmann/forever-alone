@@ -398,5 +398,5 @@ if __name__ == "__main__":
     SPRITE_CACHE = TileCache()
     MAP_CACHE = TileCache(MAP_TILE_WIDTH, MAP_TILE_HEIGHT)
     pygame.init()
-    pygame.display.set_mode((80 * SCALE, 80 * SCALE))
+    pygame.display.set_mode((80 * SCALE, 60 * SCALE))
     Game().main()

@@ -1,20 +1,39 @@
 [level]
 tileset = tileset.png
-map =   .|:..:######
-        .|s..:######
-        .|:c.:######
-        .|:..:::::::
-        ...@.......
-        .|:.........
-        .|s..:::::::
-        .|:..:......
-        .|:..:......
+map =   ~~~~.|:..:####B#
+        ~~~~.|s..:##Y###
+        ~~~~.|:..:######
+        ~~~~.|:..:::::::
+        ~~~~...@.....c..
+        ~~~~.|:.........
+        ~~~~.|s..t::::::
+        ~~~~.|:..:++++++
+        ~~~~.|:..:###Y##
+        ~~~~.|:..:#BB###
 
 [#]
 name = wall
 wall = true
 block = true
 tile = 0, 3
+
+[B]
+name = bluewindow
+wall = true
+block = true
+tile = 1, 3
+
+[Y]
+name = yellowwindow
+wall = true
+block = true
+tile = 2, 3
+
+[+]
+name = roof
+wall = true
+block = true
+tile = 3, 0
 
 [.]
 name = street
@@ -34,6 +53,11 @@ sidewalk = true
 name = wall
 wall = true
 block = true
+tile = 4, 3
+
+[~]
+name = water
+block = true
 tile = 3, 3
 
 [c]
@@ -45,4 +69,9 @@ block = true
 [s]
 name = streetlight
 sprite = streetlight.png
+sidewalk = true
+
+[t]
+name = trafficlight
+sprite = trafficlight.png
 sidewalk = true
