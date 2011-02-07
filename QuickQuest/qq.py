@@ -110,7 +110,7 @@ class Sprite(pygame.sprite.Sprite):
 
         self.rect.midbottom = \
             pos[0] * SCALE * MAP_TILE_WIDTH + (MAP_TILE_WIDTH/2 * SCALE), \
-            pos[1] * SCALE * MAP_TILE_HEIGHT + (MAP_TILE_HEIGHT/2 * SCALE)
+            pos[1] * SCALE * MAP_TILE_HEIGHT #+ (MAP_TILE_HEIGHT/2 * SCALE)
         self.depth = self.rect.midbottom[1]
 
     pos = property(_get_pos, _set_pos)
