@@ -29,7 +29,7 @@ DX = [0, 1, 0, -1]
 DY = [-1, 0, 1, 0]
 
 # Dimensions of the map tiles
-MAP_TILE_WIDTH, MAP_TILE_HEIGHT = 8, 8
+MAP_TILE_WIDTH, MAP_TILE_HEIGHT = 5, 5
 
 # Upscaling
 SCALE = 8
