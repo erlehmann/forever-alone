@@ -118,7 +118,7 @@ class Sprite(pygame.sprite.Sprite):
     def move(self, dx, dy):
         """Change the position of the sprite on screen."""
 
-        self.rect.move_ip(dx * SCALE, dy * SCALE)
+        self.rect.move_ip(dx * MAP_TILE_WIDTH, dy * MAP_TILE_HEIGHT)
         self.depth = self.rect.midbottom[1]
 
     def stand_animation(self):
