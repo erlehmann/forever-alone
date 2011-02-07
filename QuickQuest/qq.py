@@ -75,22 +75,6 @@ class SortedUpdates(pygame.sprite.RenderUpdates):
         return sorted(self.spritedict.keys(), key=lambda sprite: sprite.depth)
 
 
-class Shadow(pygame.sprite.Sprite):
-    """Sprite for shadows."""
-
-    def __init__(self, owner):
-        pygame.sprite.Sprite.__init__(self)
-        self.image = SPRITE_CACHE["shadow.png"][0][0]
-        self.image.set_alpha(64)
-        self.rect = self.image.get_rect()
-        self.owner = owner
-
-    def update(self, *args):
-        """Make the shadow follow its owner."""
-
-        self.rect.midbottom = self.owner.rect.midbottom
-
-
 class Sprite(pygame.sprite.Sprite):
     """Sprite for animated items and base class for Player."""
 
@@ -294,7 +278,6 @@ class Game:
         self.screen = pygame.display.get_surface()
         self.pressed_key = None
         self.game_over = False
-        self.shadows = pygame.sprite.RenderUpdates()
         self.sprites = SortedUpdates()
         self.overlays = pygame.sprite.RenderUpdates()
         self.use_level(Level())
@@ -302,7 +285,6 @@ class Game:
     def use_level(self, level):
         """Set the level as the current one."""
 
-        self.shadows = pygame.sprite.RenderUpdates()
         self.sprites = SortedUpdates()
         self.overlays = pygame.sprite.RenderUpdates()
         self.level = level
@@ -314,7 +296,6 @@ class Game:
             else:
                 sprite = Sprite(pos, TileCache()[tile["sprite"]])
             self.sprites.add(sprite)
-            self.shadows.add(Shadow(sprite))
         # Render the level map
         self.background, overlays = self.level.render()
         # Add the overlays for the level map
@@ -361,17 +342,13 @@ class Game:
         pygame.display.flip()
         # The main game loop
         while not self.game_over:
-            # Don't clear shadows and overlays, only sprites.
+            # Don't clear overlays, only sprites.
             self.sprites.clear(self.screen, self.background)
             self.sprites.update()
             # If the player's animation is finished, check for keypresses
             if self.player.animation is None:
                 self.control()
                 self.player.update()
-            self.shadows.update()
-            # Don't add shadows to dirty rectangles, as they already fit inside
-            # sprite rectangles.
-            self.shadows.draw(self.screen)
             dirty = self.sprites.draw(self.screen)
             # Don't add ovelays to dirty rectangles, only the places where
             # sprites are need to be updated, and those are already dirty.
