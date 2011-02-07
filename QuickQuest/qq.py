@@ -109,7 +109,7 @@ class Sprite(pygame.sprite.Sprite):
         """Set the position and depth of the sprite on the map."""
 
         self.rect.midbottom = \
-            pos[0] * SCALE * MAP_TILE_WIDTH + (MAP_TILE_WIDTH/2 * SCALE), \
+            pos[0] * SCALE * MAP_TILE_WIDTH + ((MAP_TILE_WIDTH/2 - 0.5) * SCALE), \
             pos[1] * SCALE * MAP_TILE_HEIGHT + (MAP_TILE_HEIGHT/2 * SCALE)
         self.depth = self.rect.midbottom[1]
 
@@ -204,43 +204,51 @@ class Level(object):
     def render(self):
         """Draw the level on the surface."""
 
+        sidewalk = self.is_sidewalk
         wall = self.is_wall
         tiles = MAP_CACHE[self.tileset]
         image = pygame.Surface((self.width*MAP_TILE_WIDTH*SCALE, self.height*MAP_TILE_HEIGHT*SCALE))
         overlays = {}
         for map_y, line in enumerate(self.map):
             for map_x, c in enumerate(line):
-                if wall(map_x, map_y):
+                if sidewalk(map_x, map_y):
+                    tile = 3, 1
+
+                    # corner cases
+                    if wall(map_x-1, map_y-1):  # corner NW
+                        tile = 6, 2
+
+                    if wall(map_x+1, map_y-1):  # corner NE
+                        tile = 4, 2
+
+                    if wall(map_x-1, map_y+1):  # corner SW
+                        tile = 6, 0
+
+                    if wall(map_x+1, map_y+1):  # corner SW
+                        tile = 4, 0
+
                     # Draw different tiles depending on neighbourhood
-                    if not wall(map_x, map_y+1):
-                        if wall(map_x+1, map_y) and wall(map_x-1, map_y):
+                    if wall(map_x, map_y-1):  # wall N
+                        tile = 1, 0
+                        if wall(map_x-1, map_y):  # wall NW
+                            tile = 0, 0
+                        if wall(map_x+1, map_y):  # wall NE
+                            tile = 2, 0
+
+                    else:  # no wall N
+                        if wall(map_x, map_y+1):  # wall S
                             tile = 1, 2
-                        elif wall(map_x+1, map_y):
-                            tile = 0, 2
-                        elif wall(map_x-1, map_y):
-                            tile = 2, 2
-                        else:
-                            tile = 3, 2
-                    else:
-                        if wall(map_x+1, map_y+1) and wall(map_x-1, map_y+1):
-                            tile = 1, 1
-                        elif wall(map_x+1, map_y+1):
-                            tile = 0, 1
-                        elif wall(map_x-1, map_y+1):
-                            tile = 2, 1
-                        else:
-                            tile = 3, 1
-                    # Add overlays if the wall may be obscuring something
-                    if not wall(map_x, map_y-1):
-                        if wall(map_x+1, map_y) and wall(map_x-1, map_y):
-                            over = 1, 0
-                        elif wall(map_x+1, map_y):
-                            over = 0, 0
-                        elif wall(map_x-1, map_y):
-                            over = 2, 0
-                        else:
-                            over = 3, 0
-                        overlays[(map_x, map_y)] = tiles[over[0]][over[1]]
+                            if wall(map_x-1, map_y):  # wall SW
+                                tile = 0, 2
+                            if wall(map_x+1, map_y):  # wall SE
+                                tile = 2, 2
+
+                        else:  # no wall N, no wall S
+                            if wall(map_x-1, map_y):  # wall W
+                                tile = 0, 1
+                            if wall(map_x+1, map_y):  # wall E
+                                tile = 2, 1
+
                 else:
                     try:
                         tile = self.key[c]['tile'].split(',')
@@ -270,6 +278,11 @@ class Level(object):
 
         value = self.get_tile(x, y).get(name)
         return value in (True, 1, 'true', 'yes', 'True', 'Yes', '1', 'on', 'On')
+
+    def is_sidewalk(self, x, y):
+        """Is this a sidewalk?"""
+
+        return self.get_bool(x, y, 'sidewalk')
 
     def is_wall(self, x, y):
         """Is there a wall?"""

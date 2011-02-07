@@ -1,54 +1,48 @@
 [level]
-tileset = ground.png
-map =   ###.###########
-        #.......#.#.#.#
-        #.>....#.#.h.##
-        #...@.......#.#
-        #......s...#.##
-        #..............
-        ##.#.#.#...#.##
-        #...........#.#
-        ##.#.#.#......#
-        ...........s..#
-        ##.##.###..b..#
-        #..##.###.bb#.#
-        ##.##.###....##
-        #.....###...#.#
-        ###############
+tileset = tileset.png
+map =   .|:..:######
+        .|s..:######
+        .|:c.:######
+        .|:..:::::::
+        ...@.......
+        .|:.........
+        .|s..:::::::
+        .|:..:......
+        .|:..:......
 
 [#]
 name = wall
 wall = true
 block = true
+tile = 0, 3
 
 [.]
-name = floor
-tile = 0, 3
+name = street
+tile = 1, 1
 
 [@]
 name = player
-tile = 0, 3
+tile = 1, 1
 player = true
 sprite = player.png
 
-[s]
-name = skeleton
-tile = 0, 3
-sprite = skeleton.png
-block = true
+[:]
+name = sidewalk
+sidewalk = true
 
-[>]
-name = stairs
+[|]
+name = wall
+wall = true
+block = true
 tile = 3, 3
 
-[b]
-name = crate
-tile = 0, 3
-sprite = crate.png
+[c]
+name = car
+tile = 1, 1
+sprite = car.png
 block = true
 
-[h]
-name = house
-tile = 0, 3
-sprite = house.png
-block = true
+[s]
+name = streetlight
+sprite = streetlight.png
+sidewalk = true
