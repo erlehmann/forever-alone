@@ -31,6 +31,9 @@ DY = [-1, 0, 1, 0]
 # Dimensions of the map tiles
 MAP_TILE_WIDTH, MAP_TILE_HEIGHT = 16, 16
 
+# Upscaling
+SCALE = 2
+
 class TileCache:
     """Load the tilesets lazily into global cache"""
 
@@ -62,7 +65,10 @@ class TileCache:
             tile_table.append(line)
             for tile_y in range(0, image_height/height):
                 rect = (tile_x*width, tile_y*height, width, height)
-                line.append(image.subsurface(rect))
+                rectsurface = image.subsurface(rect)
+                rectsurface = pygame.transform.scale(rectsurface, (height*SCALE, width*SCALE))
+                line.append(rectsurface)
+
         return tile_table
 
 
@@ -93,8 +99,8 @@ class Sprite(pygame.sprite.Sprite):
         """Check the current position of the sprite on the map."""
 
         a = \
-            (self.rect.midbottom[0] - (MAP_TILE_WIDTH/2)) / MAP_TILE_WIDTH, \
-            (self.rect.midbottom[1] - (MAP_TILE_HEIGHT/2)) / (MAP_TILE_HEIGHT)
+            (self.rect.midbottom[0] - (MAP_TILE_WIDTH/2)) / MAP_TILE_WIDTH / SCALE, \
+            (self.rect.midbottom[1] - (MAP_TILE_HEIGHT/2)) / MAP_TILE_HEIGHT / SCALE
 
         print a
         return a
@@ -103,8 +109,8 @@ class Sprite(pygame.sprite.Sprite):
         """Set the position and depth of the sprite on the map."""
 
         self.rect.midbottom = \
-            pos[0] * MAP_TILE_WIDTH + (MAP_TILE_WIDTH/2), \
-            pos[1] * MAP_TILE_HEIGHT + (MAP_TILE_HEIGHT/2)
+            pos[0] * SCALE * MAP_TILE_WIDTH + (MAP_TILE_WIDTH/2 * SCALE), \
+            pos[1] * SCALE * MAP_TILE_HEIGHT + (MAP_TILE_HEIGHT/2 * SCALE)
         self.depth = self.rect.midbottom[1]
 
     pos = property(_get_pos, _set_pos)
@@ -112,7 +118,7 @@ class Sprite(pygame.sprite.Sprite):
     def move(self, dx, dy):
         """Change the position of the sprite on screen."""
 
-        self.rect.move_ip(dx, dy)
+        self.rect.move_ip(dx * SCALE, dy * SCALE)
         self.depth = self.rect.midbottom[1]
 
     def stand_animation(self):
@@ -200,7 +206,7 @@ class Level(object):
 
         wall = self.is_wall
         tiles = MAP_CACHE[self.tileset]
-        image = pygame.Surface((self.width*MAP_TILE_WIDTH, self.height*MAP_TILE_HEIGHT))
+        image = pygame.Surface((self.width*MAP_TILE_WIDTH*SCALE, self.height*MAP_TILE_HEIGHT*SCALE))
         overlays = {}
         for map_y, line in enumerate(self.map):
             for map_x, c in enumerate(line):
@@ -244,7 +250,7 @@ class Level(object):
                         tile = 0, 3
                 tile_image = tiles[tile[0]][tile[1]]
                 image.blit(tile_image,
-                           (map_x*MAP_TILE_WIDTH, map_y*MAP_TILE_HEIGHT))
+                           (map_x*MAP_TILE_WIDTH*SCALE, map_y*MAP_TILE_HEIGHT*SCALE))
         return image, overlays
 
     def get_tile(self, x, y):
@@ -309,7 +315,10 @@ class Game:
         for (x, y), image in overlays.iteritems():
             overlay = pygame.sprite.Sprite(self.overlays)
             overlay.image = image
-            overlay.rect = image.get_rect().move(x*MAP_TILE_WIDTH, y*MAP_TILE_HEIGHT - (MAP_TILE_HEIGHT/2))
+            overlay.rect = image.get_rect().move(
+                x*MAP_TILE_WIDTH* SCALE,
+                y*MAP_TILE_HEIGHT* SCALE - (MAP_TILE_HEIGHT/2 * SCALE)
+            )
 
     def control(self):
         """Handle the controls of the game."""
@@ -376,5 +385,5 @@ if __name__ == "__main__":
     SPRITE_CACHE = TileCache()
     MAP_CACHE = TileCache(MAP_TILE_WIDTH, MAP_TILE_HEIGHT)
     pygame.init()
-    pygame.display.set_mode((424, 320))
+    pygame.display.set_mode((400 * SCALE, 300 * SCALE))
     Game().main()
