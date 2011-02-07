@@ -29,10 +29,10 @@ DX = [0, 1, 0, -1]
 DY = [-1, 0, 1, 0]
 
 # Dimensions of the map tiles
-MAP_TILE_WIDTH, MAP_TILE_HEIGHT = 16, 16
+MAP_TILE_WIDTH, MAP_TILE_HEIGHT = 8, 8
 
 # Upscaling
-SCALE = 2
+SCALE = 8
 
 class TileCache:
     """Load the tilesets lazily into global cache"""
@@ -152,13 +152,13 @@ class Player(Sprite):
     def walk_animation(self):
         """Animation for the player walking."""
 
-        # This animation is hardcoded for 4 frames and 16x24 map tiles
+        # This animation is hardcoded for 4 frames
         for frame in range(4):
             self.image = self.frames[self.direction][frame]
             yield None
-            self.move(2*DX[self.direction], 2*DY[self.direction])
+            self.move(DX[self.direction], DY[self.direction])
             yield None
-            self.move(2*DX[self.direction], 2*DY[self.direction])
+            self.move(DX[self.direction], DY[self.direction])
 
     def update(self, *args):
         """Run the current animation or just stand there if no animation set."""
@@ -385,5 +385,5 @@ if __name__ == "__main__":
     SPRITE_CACHE = TileCache()
     MAP_CACHE = TileCache(MAP_TILE_WIDTH, MAP_TILE_HEIGHT)
     pygame.init()
-    pygame.display.set_mode((400 * SCALE, 300 * SCALE))
+    pygame.display.set_mode((80 * SCALE, 80 * SCALE))
     Game().main()
