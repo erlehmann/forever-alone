@@ -29,12 +29,12 @@ DX = [0, 1, 0, -1]
 DY = [-1, 0, 1, 0]
 
 # Dimensions of the map tiles
-MAP_TILE_WIDTH, MAP_TILE_HEIGHT = 24, 16
+MAP_TILE_WIDTH, MAP_TILE_HEIGHT = 16, 16
 
 class TileCache:
     """Load the tilesets lazily into global cache"""
 
-    def __init__(self,  width=32, height=None):
+    def __init__(self,  width=MAP_TILE_WIDTH, height=None):
         self.width = width
         self.height = height or width
         self.cache = {}
@@ -92,12 +92,19 @@ class Sprite(pygame.sprite.Sprite):
     def _get_pos(self):
         """Check the current position of the sprite on the map."""
 
-        return (self.rect.midbottom[0]-12)/24, (self.rect.midbottom[1]-16)/16
+        a = \
+            (self.rect.midbottom[0] - (MAP_TILE_WIDTH/2)) / MAP_TILE_WIDTH, \
+            (self.rect.midbottom[1] - (MAP_TILE_HEIGHT/2)) / (MAP_TILE_HEIGHT)
+
+        print a
+        return a
 
     def _set_pos(self, pos):
         """Set the position and depth of the sprite on the map."""
 
-        self.rect.midbottom = pos[0]*24+12, pos[1]*16+16
+        self.rect.midbottom = \
+            pos[0] * MAP_TILE_WIDTH + (MAP_TILE_WIDTH/2), \
+            pos[1] * MAP_TILE_HEIGHT + (MAP_TILE_HEIGHT/2)
         self.depth = self.rect.midbottom[1]
 
     pos = property(_get_pos, _set_pos)
@@ -143,9 +150,9 @@ class Player(Sprite):
         for frame in range(4):
             self.image = self.frames[self.direction][frame]
             yield None
-            self.move(3*DX[self.direction], 2*DY[self.direction])
+            self.move(2*DX[self.direction], 2*DY[self.direction])
             yield None
-            self.move(3*DX[self.direction], 2*DY[self.direction])
+            self.move(2*DX[self.direction], 2*DY[self.direction])
 
     def update(self, *args):
         """Run the current animation or just stand there if no animation set."""
@@ -302,7 +309,7 @@ class Game:
         for (x, y), image in overlays.iteritems():
             overlay = pygame.sprite.Sprite(self.overlays)
             overlay.image = image
-            overlay.rect = image.get_rect().move(x*24, y*16-16)
+            overlay.rect = image.get_rect().move(x*MAP_TILE_WIDTH, y*MAP_TILE_HEIGHT - (MAP_TILE_HEIGHT/2))
 
     def control(self):
         """Handle the controls of the game."""
