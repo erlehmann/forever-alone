@@ -156,13 +156,16 @@ class Player(Sprite):
     def walk_animation(self):
         """Animation for the player walking."""
 
+        def move_scaled(direction):
+            self.move(DX[direction] * SCALE/8, DY[direction] * SCALE/8)
+
         # This animation is hardcoded for 4 frames
         for frame in range(4):
             self.image = self.frames[self.direction][frame]
             yield None
-            self.move(DX[self.direction], DY[self.direction])
+            move_scaled(self.direction)
             yield None
-            self.move(DX[self.direction], DY[self.direction])
+            move_scaled(self.direction)
 
     def update(self, *args):
         """Run the current animation or just stand there if no animation set."""
