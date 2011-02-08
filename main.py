@@ -393,24 +393,24 @@ class Game:
     def scroll_after(self, rect):
         dx, dy = 0, 0
 
-        if rect.left < (3 * MAP_TILE_WIDTH * SCALE):
+        if rect.left < (5 * MAP_TILE_WIDTH * SCALE):
             dx = 1
-            if rect.left < (2 * MAP_TILE_WIDTH * SCALE):
+            if rect.left < (4 * MAP_TILE_WIDTH * SCALE):
                 dx = 2
 
-        if rect.top < (3 * MAP_TILE_HEIGHT * SCALE):
+        if rect.top < (4 * MAP_TILE_HEIGHT * SCALE):
             dy = 1
-            if rect.top < (2 * MAP_TILE_HEIGHT * SCALE):
+            if rect.top < (3 * MAP_TILE_HEIGHT * SCALE):
                 dy = 2
 
-        if rect.right > self.screen.get_width() - (3 * MAP_TILE_WIDTH * SCALE):
+        if rect.right > self.screen.get_width() - (5 * MAP_TILE_WIDTH * SCALE):
             dx = -1
-            if rect.right > self.screen.get_width() - (2 * MAP_TILE_WIDTH * SCALE):
+            if rect.right > self.screen.get_width() - (4 * MAP_TILE_WIDTH * SCALE):
                 dx = -2
 
-        if rect.bottom > self.screen.get_height() - (3 * MAP_TILE_HEIGHT * SCALE):
+        if rect.bottom > self.screen.get_height() - (4 * MAP_TILE_HEIGHT * SCALE):
             dy = -1
-            if rect.bottom > self.screen.get_height() - (2 * MAP_TILE_HEIGHT * SCALE):
+            if rect.bottom > self.screen.get_height() - (3 * MAP_TILE_HEIGHT * SCALE):
                 dy = -2
 
         if dx or dy:
