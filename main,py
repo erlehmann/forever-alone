@@ -98,12 +98,9 @@ class Sprite(pygame.sprite.Sprite):
     def _get_pos(self):
         """Check the current position of the sprite on the map."""
 
-        a = \
+        return \
             (self.rect.midbottom[0] - (MAP_TILE_WIDTH/2)) / MAP_TILE_WIDTH / SCALE, \
             (self.rect.midbottom[1] - (MAP_TILE_HEIGHT/2)) / MAP_TILE_HEIGHT / SCALE
-
-        print a
-        return a
 
     def _set_pos(self, pos):
         """Set the position and depth of the sprite on the map."""
