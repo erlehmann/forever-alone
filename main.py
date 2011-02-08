@@ -23,6 +23,9 @@ import ConfigParser
 import pygame
 import pygame.locals as pg
 
+import itertools
+import math
+
 # Motion offsets for particular directions
 #     N  E  S   W
 DX = [0, 1, 0, -1]
@@ -33,6 +36,9 @@ MAP_TILE_WIDTH, MAP_TILE_HEIGHT = 5, 5
 
 # Upscaling
 SCALE = 8
+
+# Scrolling offsets
+OFFSET_X, OFFSET_Y = 0, 0
 
 class TileCache:
     """Load the tilesets lazily into global cache"""
@@ -99,15 +105,16 @@ class Sprite(pygame.sprite.Sprite):
         """Check the current position of the sprite on the map."""
 
         return \
-            (self.rect.midbottom[0] - (MAP_TILE_WIDTH/2)) / MAP_TILE_WIDTH / SCALE, \
-            (self.rect.midbottom[1] - (MAP_TILE_HEIGHT/2)) / MAP_TILE_HEIGHT / SCALE
+            int(round((self.rect.midbottom[0] - (MAP_TILE_WIDTH/2) - OFFSET_X) / (MAP_TILE_WIDTH * SCALE))), \
+            int(round((self.rect.midbottom[1] - (MAP_TILE_HEIGHT/2) - OFFSET_Y) / (MAP_TILE_HEIGHT * SCALE)))
+
 
     def _set_pos(self, pos):
         """Set the position and depth of the sprite on the map."""
 
         self.rect.midbottom = \
-            pos[0] * SCALE * MAP_TILE_WIDTH + ((MAP_TILE_WIDTH/2 - 0.5) * SCALE), \
-            pos[1] * SCALE * MAP_TILE_HEIGHT + (MAP_TILE_HEIGHT/2 * SCALE)
+            (pos[0] * MAP_TILE_WIDTH + (MAP_TILE_WIDTH/2 - 0.5 + OFFSET_X)) * SCALE, \
+            (pos[1] * MAP_TILE_HEIGHT + MAP_TILE_HEIGHT/2 + OFFSET_Y) * SCALE
         self.depth = self.rect.midbottom[1]
 
     pos = property(_get_pos, _set_pos)
@@ -299,6 +306,7 @@ class Game:
 
     def __init__(self):
         self.screen = pygame.display.get_surface()
+        self.spritebg = self.screen.copy()
         self.pressed_key = None
         self.game_over = False
         self.sprites = SortedUpdates()
@@ -362,31 +370,88 @@ class Game:
             walk(3)
         elif pressed(pg.K_RIGHT):
             walk(1)
+        elif pressed(pg.K_ESCAPE):
+            pygame.event.post(pygame.event.Event(pg.QUIT))
         self.pressed_key = None
+
+
+    def scroll(self, dx, dy):
+        global OFFSET_X, OFFSET_Y
+        OFFSET_X += dx
+        OFFSET_Y += dy
+
+        self.screen.blit(self.background, (OFFSET_X, OFFSET_Y))
+
+        sprites = itertools.chain(self.sprites, self.overlays)
+        for sprite in sprites:
+            sprite.rect.move_ip(dx, dy)
+
+
+    def scroll_after(self, rect):
+        dx, dy = 0, 0
+
+        if rect.left < (3 * MAP_TILE_WIDTH * SCALE):
+            dx = 1
+            if rect.left < (2 * MAP_TILE_WIDTH * SCALE):
+                dx = 2
+
+        if rect.top < (3 * MAP_TILE_HEIGHT * SCALE):
+            dy = 1
+            if rect.top < (2 * MAP_TILE_HEIGHT * SCALE):
+                dy = 2
+
+        if rect.right > self.screen.get_width() - (3 * MAP_TILE_WIDTH * SCALE):
+            dx = -1
+            if rect.right > self.screen.get_width() - (2 * MAP_TILE_WIDTH * SCALE):
+                dx = -2
+
+        if rect.bottom > self.screen.get_height() - (3 * MAP_TILE_HEIGHT * SCALE):
+            dy = -1
+            if rect.bottom > self.screen.get_height() - (2 * MAP_TILE_HEIGHT * SCALE):
+                dy = -2
+
+        if dx or dy:
+            self.scroll(dx * MAP_TILE_WIDTH/4, dy * MAP_TILE_HEIGHT/4)
+            return True
+
+        return False
+
 
     def main(self):
         """Run the main loop."""
 
         clock = pygame.time.Clock()
+
+        # follow player position
         # Draw the whole screen initially
         self.screen.blit(self.background, (0, 0))
         self.overlays.draw(self.screen)
         pygame.display.flip()
         # The main game loop
         while not self.game_over:
+            scrolled = self.scroll_after(self.player.rect)
+
             # Don't clear overlays, only sprites.
-            self.sprites.clear(self.screen, self.background)
+            # Ugly hack for correct sprite backgrounds.
+            self.spritebg.blit(self.background, (OFFSET_X, OFFSET_Y))
+            self.sprites.clear(self.screen, self.spritebg)
             self.sprites.update()
             # If the player's animation is finished, check for keypresses
             if self.player.animation is None:
                 self.control()
                 self.player.update()
             dirty = self.sprites.draw(self.screen)
-            # Don't add ovelays to dirty rectangles, only the places where
+            # Don't add overlays to dirty rectangles, only the places where
             # sprites are need to be updated, and those are already dirty.
             self.overlays.draw(self.screen)
-            # Update the dirty areas of the screen
-            pygame.display.update(dirty)
+
+            if not scrolled:
+                # Update the dirty areas of the screen
+                pygame.display.update(dirty)
+            else:
+                # Draw fucking everything
+                pygame.display.update()
+
             # Wait for one tick of the game clock
             clock.tick(15)
             # Process pygame events
