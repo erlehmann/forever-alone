@@ -311,16 +311,32 @@ class Game:
         self.screen = pygame.display.get_surface()
         self.spritebg = self.screen.copy()
         self.pressed_key = None
+        self.title_screen = True
         self.game_over = False
         self.sprites = SortedUpdates()
         self.overlays = pygame.sprite.RenderUpdates()
         self.use_level(Level())
 
+        pygame.mouse.set_visible(False)
+
+    def intro(self):
+        titlescreen = pygame.transform.scale(pygame.image.load('title.png'), (80 * SCALE, 60 * SCALE))
+        self.screen.blit(titlescreen, (0, 0))
+        pygame.display.update()
+
         pygame.mixer.init()
         self.trafficsound = pygame.mixer.Sound('traffic.oga')
         self.trafficsound.play()
         self.trafficsound.set_volume(0.2)
-        self.trafficsound.fadeout(600000)
+        self.trafficsound.fadeout(300000)
+
+        clock = pygame.time.Clock()
+
+        while self.title_screen:
+            clock.tick(30)
+            for event in pygame.event.get():
+                if event.type == pg.KEYDOWN:
+                    self.title_screen = False
 
     def use_level(self, level):
         """Set the level as the current one."""
@@ -469,5 +485,10 @@ if __name__ == "__main__":
     SPRITE_CACHE = TileCache()
     MAP_CACHE = TileCache(MAP_TILE_WIDTH, MAP_TILE_HEIGHT)
     pygame.init()
+
+    #video = pygame.display.Info()
+    #pygame.display.set_mode((video.current_w, video.current_h), pygame.FULLSCREEN)
     pygame.display.set_mode((80 * SCALE, 60 * SCALE))
+
+    Game().intro()
     Game().main()
