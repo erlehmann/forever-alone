@@ -305,6 +305,12 @@ class Game:
         self.overlays = pygame.sprite.RenderUpdates()
         self.use_level(Level())
 
+        pygame.mixer.init()
+        self.trafficsound = pygame.mixer.Sound('traffic.oga')
+        self.trafficsound.play()
+        self.trafficsound.set_volume(0.2)
+        self.trafficsound.fadeout(600000)
+
     def use_level(self, level):
         """Set the level as the current one."""
 
