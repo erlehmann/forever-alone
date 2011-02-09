@@ -37,6 +37,9 @@ MAP_TILE_WIDTH, MAP_TILE_HEIGHT = 5, 5
 # Upscaling
 SCALE = 8
 
+# Display dimensions
+DISPLAY_X, DISPLAY_Y = 80 * SCALE, 60 * SCALE
+
 # Scrolling offsets
 OFFSET_X, OFFSET_Y = 0, 0
 
@@ -320,7 +323,7 @@ class Game:
         pygame.mouse.set_visible(False)
 
     def intro(self):
-        titlescreen = pygame.transform.scale(pygame.image.load('title.png'), (80 * SCALE, 60 * SCALE))
+        titlescreen = pygame.transform.scale(pygame.image.load('title.png'), (DISPLAY_X, DISPLAY_Y))
         self.screen.blit(titlescreen, (0, 0))
         pygame.display.update()
 
@@ -488,7 +491,7 @@ if __name__ == "__main__":
 
     #video = pygame.display.Info()
     #pygame.display.set_mode((video.current_w, video.current_h), pygame.FULLSCREEN)
-    pygame.display.set_mode((80 * SCALE, 60 * SCALE))
+    pygame.display.set_mode((DISPLAY_X, DISPLAY_Y))
 
     Game().intro()
     Game().main()
