@@ -35,6 +35,7 @@ tile = 1, 3
 name = yellowwindow
 wall = true
 block = true
+light = true
 tile = 2, 3
 
 [+]
@@ -78,6 +79,7 @@ block = true
 name = streetlight
 sprite = streetlight.png
 sidewalk = true
+light = true
 
 [t]
 name = trafficlight

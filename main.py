@@ -99,6 +99,46 @@ class TileCache:
         return tile_table
 
 
+class Lights(pygame.sprite.RenderUpdates):
+    """A sprite group that blits additive."""
+
+    def draw(self, surface):
+       spritedict = self.spritedict
+       surface_blit = surface.blit
+       dirty = self.lostsprites
+       self.lostsprites = []
+       dirty_append = dirty.append
+       for s in self.sprites():
+           r = spritedict[s]
+           newrect = surface_blit(s.image, s.rect, special_flags=pg.BLEND_ADD)
+           if r is 0:
+               dirty_append(newrect)
+           else:
+               if newrect.colliderect(r):
+                   dirty_append(newrect.union(r))
+               else:
+                   dirty_append(newrect)
+                   dirty_append(r)
+           spritedict[s] = newrect
+       return dirty
+
+
+class Light(pygame.sprite.Sprite):
+    """Sprite for lights."""
+
+    def __init__(self, filename, owner):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.transform.scale(IMAGE_CACHE[filename], \
+            (5 * MAP_TILE_WIDTH * SCALE, 5 * MAP_TILE_HEIGHT * SCALE))
+        self.rect = self.image.get_rect()
+        self.owner = owner
+
+    def update(self, *args):
+        """Make the light follow its owner."""
+
+        self.rect.center = self.owner.rect.midbottom
+
+
 class SortedUpdates(pygame.sprite.RenderUpdates):
     """A sprite group that sorts them by depth."""
 
@@ -334,6 +374,7 @@ class Game:
         self.pressed_key = None
         self.title_screen = True
         self.game_over = False
+        self.lights = Lights()
         self.sprites = SortedUpdates()
         self.overlays = pygame.sprite.RenderUpdates()
         self.use_level(Level())
@@ -362,6 +403,7 @@ class Game:
     def use_level(self, level):
         """Set the level as the current one."""
 
+        self.lights = Lights()
         self.sprites = SortedUpdates()
         self.overlays = pygame.sprite.RenderUpdates()
         self.level = level
@@ -373,6 +415,9 @@ class Game:
             else:
                 sprite = Sprite(pos, TileCache()[tile["sprite"]])
             self.sprites.add(sprite)
+
+            if tile.get("light") in ('true', '1', 'yes', 'on'):
+                self.lights.add(Light("light.png", sprite))
         # Render the level map
         self.background, overlays = self.level.render()
         # Add the overlays for the level map
@@ -474,13 +519,17 @@ class Game:
             # Don't clear overlays, only sprites.
             # Ugly hack for correct sprite backgrounds.
             self.spritebg.blit(self.background, (OFFSET_X, OFFSET_Y))
+            self.lights.clear(self.screen, self.spritebg)
             self.sprites.clear(self.screen, self.spritebg)
             self.sprites.update()
             # If the player's animation is finished, check for keypresses
             if self.player.animation is None:
                 self.control()
                 self.player.update()
-            dirty = self.sprites.draw(self.screen)
+            self.lights.update()
+
+            dirty = self.lights.draw(self.screen)
+            dirty.extend(self.sprites.draw(self.screen))
             # Don't add overlays to dirty rectangles, only the places where
             # sprites are need to be updated, and those are already dirty.
             self.overlays.draw(self.screen)
