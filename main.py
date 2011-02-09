@@ -43,6 +43,24 @@ DISPLAY_X, DISPLAY_Y = 80 * SCALE, 60 * SCALE
 # Scrolling offsets
 OFFSET_X, OFFSET_Y = 0, 0
 
+
+class ImageCache:
+    """Load an image lazily into global cache"""
+
+    def __init__(self):
+        self.cache = {}
+
+    def __getitem__(self, filename):
+        """Return a file, load it from disk, if needed."""
+
+        try:
+            return self.cache[filename]
+        except KeyError:
+            image = pygame.image.load(filename).convert()
+            self.cache[filename] = image
+            return image
+
+
 class TileCache:
     """Load the tilesets lazily into global cache"""
 
@@ -323,7 +341,7 @@ class Game:
         pygame.mouse.set_visible(False)
 
     def intro(self):
-        titlescreen = pygame.transform.scale(pygame.image.load('title.png'), (DISPLAY_X, DISPLAY_Y))
+        titlescreen = pygame.transform.scale(IMAGE_CACHE["title.png"], (DISPLAY_X, DISPLAY_Y))
         self.screen.blit(titlescreen, (0, 0))
         pygame.display.update()
 
@@ -485,6 +503,7 @@ class Game:
 
 
 if __name__ == "__main__":
+    IMAGE_CACHE = ImageCache()
     SPRITE_CACHE = TileCache()
     MAP_CACHE = TileCache(MAP_TILE_WIDTH, MAP_TILE_HEIGHT)
     pygame.init()
