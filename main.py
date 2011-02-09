@@ -346,7 +346,7 @@ class Game:
         pygame.display.update()
 
         pygame.mixer.init()
-        self.trafficsound = pygame.mixer.Sound('traffic.oga')
+        self.trafficsound = pygame.mixer.Sound("traffic.oga")
         self.trafficsound.play()
         self.trafficsound.set_volume(0.2)
         self.trafficsound.fadeout(300000)
