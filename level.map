@@ -53,6 +53,7 @@ name = player
 tile = 1, 1
 player = true
 sprite = player.png
+light = true
 
 [:]
 name = sidewalk

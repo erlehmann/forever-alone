@@ -403,6 +403,8 @@ class Game:
     def use_level(self, level):
         """Set the level as the current one."""
 
+        self.mask = pygame.transform.scale(IMAGE_CACHE["mask.png"], (DISPLAY_X, DISPLAY_Y))
+
         self.lights = Lights()
         self.sprites = SortedUpdates()
         self.overlays = pygame.sprite.RenderUpdates()
@@ -511,6 +513,7 @@ class Game:
         # Draw the whole screen initially
         self.screen.blit(self.background, (0, 0))
         self.overlays.draw(self.screen)
+        self.screen.blit(self.mask, (0, 0), special_flags=pg.BLEND_SUB)
         pygame.display.flip()
         # The main game loop
         while not self.game_over:
@@ -533,6 +536,7 @@ class Game:
             # Don't add overlays to dirty rectangles, only the places where
             # sprites are need to be updated, and those are already dirty.
             self.overlays.draw(self.screen)
+            self.screen.blit(self.mask, (0, 0), special_flags=pg.BLEND_SUB)
 
             if not scrolled:
                 # Update the dirty areas of the screen
