@@ -337,9 +337,9 @@ class Game:
 
         while self.title_screen:
             clock.tick(30)
-            for event in pygame.event.get():
-                if event.type == pg.KEYDOWN:
-                    self.title_screen = False
+            event = pygame.event.wait()
+            if event.type == pg.KEYDOWN:
+                self.title_screen = False
 
     def use_level(self, level):
         """Set the level as the current one."""
@@ -493,5 +493,6 @@ if __name__ == "__main__":
     #pygame.display.set_mode((video.current_w, video.current_h), pygame.FULLSCREEN)
     pygame.display.set_mode((DISPLAY_X, DISPLAY_Y))
 
-    Game().intro()
-    Game().main()
+    G = Game()
+    G.intro()
+    G.main()
