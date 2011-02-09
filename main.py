@@ -513,11 +513,17 @@ class Game:
         # Draw the whole screen initially
         self.screen.blit(self.background, (0, 0))
         self.overlays.draw(self.screen)
-        self.screen.blit(self.mask, (0, 0), special_flags=pg.BLEND_SUB)
         pygame.display.flip()
+
+        firstiteration = True
         # The main game loop
         while not self.game_over:
             scrolled = self.scroll_after(self.player.rect)
+
+            # Ugly and CPU-intensive hack to prevents sprite/mask flickering
+            # when moving the player around the screen without scrolling.
+            if not scrolled and self.player.animation:
+                self.screen.blit(self.background, (OFFSET_X, OFFSET_Y))
 
             # Don't clear overlays, only sprites.
             # Ugly hack for correct sprite backgrounds.
@@ -536,14 +542,16 @@ class Game:
             # Don't add overlays to dirty rectangles, only the places where
             # sprites are need to be updated, and those are already dirty.
             self.overlays.draw(self.screen)
+
             self.screen.blit(self.mask, (0, 0), special_flags=pg.BLEND_SUB)
 
-            if not scrolled:
-                # Update the dirty areas of the screen
-                pygame.display.update(dirty)
-            else:
+            if scrolled or firstiteration:
                 # Draw fucking everything
                 pygame.display.update()
+                firstiteration = False
+            else:
+                # Update the dirty areas of the screen
+                pygame.display.update(dirty)
 
             # Wait for one tick of the game clock
             clock.tick(15)
