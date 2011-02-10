@@ -403,7 +403,7 @@ class Game:
     def intro(self):
         titlescreen = pygame.transform.scale(IMAGE_CACHE["title.png"], (CLIP_WIDTH, CLIP_HEIGHT))
         self.screen.blit(titlescreen, GET_CLIP_RECT())
-        pygame.display.update()
+        pygame.display.update(GET_CLIP_RECT())
 
         pygame.mixer.init()
         self.trafficsound = pygame.mixer.Sound("traffic.oga")
@@ -534,7 +534,7 @@ class Game:
         # Draw the whole screen initially
         self.screen.blit(self.background, (0, 0))
         self.overlays.draw(self.screen)
-        pygame.display.flip()
+        pygame.display.update(GET_CLIP_RECT())
 
         firstiteration = True
         # The main game loop
@@ -568,11 +568,11 @@ class Game:
 
             if scrolled or firstiteration:
                 # Draw fucking everything
-                pygame.display.update()
+                dirty = [GET_CLIP_RECT()]
                 firstiteration = False
-            else:
-                # Update the dirty areas of the screen
-                pygame.display.update(dirty)
+
+            # Update the dirty areas of the screen
+            pygame.display.update(dirty)
 
             # Wait for one tick of the game clock
             clock.tick(15)
