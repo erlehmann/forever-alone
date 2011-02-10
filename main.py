@@ -2,20 +2,12 @@
 # -*- coding: utf-8 -*-
 
 """
-This is sample of how you can implement a tile-based game, not unlike
-the RPG games known from consoles, in pygame. It's not a playable game,
-but it can be turned into one. Care has been taken to comment it clearly,
-so that you can use it easily as a starting point for your game.
+forever alone — a game about loneliness and a city
 
-The program reads a level definition from a "level.map" file, and uses the
-graphics referenced for that file to display a tiled map on the screen and
-let you move an animated player character around it.
+@copyright: 2008, 2009 Radomir Dopieralski <qq@sheep.art.pl>; 2011 Nils Dagsson Moskopp <nils@dieweltistgarnichtso.net>
+@license: GPL, version 3 or (at your option) any later version.
 
-Note that a lot of additional work is needed to turn it into an actual game.
-
-@copyright: 2008, 2009 Radomir Dopieralski <qq@sheep.art.pl>
-@license: BSD, see COPYING for details
-
+Code by Radomir Dopieralski was originally licensed under BSD, see COPYING for details.
 """
 
 import ConfigParser
