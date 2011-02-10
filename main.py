@@ -37,8 +37,25 @@ MAP_TILE_WIDTH, MAP_TILE_HEIGHT = 5, 5
 # Upscaling
 SCALE = 8
 
-# Display dimensions
-DISPLAY_X, DISPLAY_Y = 80 * SCALE, 60 * SCALE
+# Display mode
+DISPLAY_MODE = pygame.FULLSCREEN
+
+def GET_DISPLAY_X():
+    return pygame.display.Info().current_w
+
+def GET_DISPLAY_Y():
+    return pygame.display.Info().current_h
+
+# Clipping area (actual game interface)
+CLIP_WIDTH, CLIP_HEIGHT = 80 * SCALE, 60 * SCALE
+
+def GET_CLIP_RECT():
+    return pygame.Rect(
+        (GET_DISPLAY_X() / 2) - (CLIP_WIDTH / 2),
+        (GET_DISPLAY_Y() / 2) - (CLIP_HEIGHT / 2),
+        CLIP_WIDTH,
+        CLIP_HEIGHT
+    )
 
 # Scrolling offsets
 OFFSET_X, OFFSET_Y = 0, 0
@@ -370,6 +387,8 @@ class Game:
 
     def __init__(self):
         self.screen = pygame.display.get_surface()
+        self.screen.set_clip(GET_CLIP_RECT())
+
         self.spritebg = self.screen.copy()
         self.pressed_key = None
         self.title_screen = True
@@ -382,8 +401,8 @@ class Game:
         pygame.mouse.set_visible(False)
 
     def intro(self):
-        titlescreen = pygame.transform.scale(IMAGE_CACHE["title.png"], (DISPLAY_X, DISPLAY_Y))
-        self.screen.blit(titlescreen, (0, 0))
+        titlescreen = pygame.transform.scale(IMAGE_CACHE["title.png"], (CLIP_WIDTH, CLIP_HEIGHT))
+        self.screen.blit(titlescreen, GET_CLIP_RECT())
         pygame.display.update()
 
         pygame.mixer.init()
@@ -403,7 +422,7 @@ class Game:
     def use_level(self, level):
         """Set the level as the current one."""
 
-        self.mask = pygame.transform.scale(IMAGE_CACHE["mask.png"], (DISPLAY_X, DISPLAY_Y))
+        self.mask = pygame.transform.scale(IMAGE_CACHE["mask.png"], (CLIP_WIDTH, CLIP_HEIGHT))
 
         self.lights = Lights()
         self.sprites = SortedUpdates()
@@ -477,24 +496,26 @@ class Game:
     def scroll_after(self, rect):
         dx, dy = 0, 0
 
-        if rect.left < (5 * MAP_TILE_WIDTH * SCALE):
+        clip = GET_CLIP_RECT()
+
+        if rect.left < clip.left + (5 * MAP_TILE_WIDTH * SCALE):
             dx = 1
-            if rect.left < (4 * MAP_TILE_WIDTH * SCALE):
+            if rect.left < clip.left + (4 * MAP_TILE_WIDTH * SCALE):
                 dx = 2
 
-        if rect.top < (4 * MAP_TILE_HEIGHT * SCALE):
+        if rect.top < clip.top + (4 * MAP_TILE_HEIGHT * SCALE):
             dy = 1
-            if rect.top < (3 * MAP_TILE_HEIGHT * SCALE):
+            if rect.top < clip.top + (3 * MAP_TILE_HEIGHT * SCALE):
                 dy = 2
 
-        if rect.right > self.screen.get_width() - (5 * MAP_TILE_WIDTH * SCALE):
+        if rect.right > clip.right - (5 * MAP_TILE_WIDTH * SCALE):
             dx = -1
-            if rect.right > self.screen.get_width() - (4 * MAP_TILE_WIDTH * SCALE):
+            if rect.right > clip.right - (4 * MAP_TILE_WIDTH * SCALE):
                 dx = -2
 
-        if rect.bottom > self.screen.get_height() - (4 * MAP_TILE_HEIGHT * SCALE):
+        if rect.bottom > clip.bottom - (4 * MAP_TILE_HEIGHT * SCALE):
             dy = -1
-            if rect.bottom > self.screen.get_height() - (3 * MAP_TILE_HEIGHT * SCALE):
+            if rect.bottom > clip.bottom - (3 * MAP_TILE_HEIGHT * SCALE):
                 dy = -2
 
         if dx or dy:
@@ -543,7 +564,7 @@ class Game:
             # sprites are need to be updated, and those are already dirty.
             self.overlays.draw(self.screen)
 
-            self.screen.blit(self.mask, (0, 0), special_flags=pg.BLEND_SUB)
+            self.screen.blit(self.mask, GET_CLIP_RECT(), special_flags=pg.BLEND_SUB)
 
             if scrolled or firstiteration:
                 # Draw fucking everything
@@ -567,11 +588,9 @@ if __name__ == "__main__":
     IMAGE_CACHE = ImageCache()
     SPRITE_CACHE = TileCache()
     MAP_CACHE = TileCache(MAP_TILE_WIDTH, MAP_TILE_HEIGHT)
-    pygame.init()
 
-    #video = pygame.display.Info()
-    #pygame.display.set_mode((video.current_w, video.current_h), pygame.FULLSCREEN)
-    pygame.display.set_mode((DISPLAY_X, DISPLAY_Y))
+    pygame.init()
+    pygame.display.set_mode((GET_DISPLAY_X(), GET_DISPLAY_Y()), DISPLAY_MODE)
 
     G = Game()
     G.intro()
