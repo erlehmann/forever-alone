@@ -522,13 +522,8 @@ class Game:
 
         clock = pygame.time.Clock()
 
-        # follow player position
-        # Draw the whole screen initially
-        self.screen.blit(self.background, (0, 0))
-        self.overlays.draw(self.screen)
-        pygame.display.update(GET_CLIP_RECT())
-
         firstiteration = True
+
         # The main game loop
         while not self.game_over:
             scrolled = self.scroll_after(self.player.rect)
