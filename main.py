@@ -471,6 +471,12 @@ class Game:
             walk(1)
         elif pressed(pg.K_ESCAPE):
             pygame.event.post(pygame.event.Event(pg.QUIT))
+        elif pressed(pg.K_PRINT):
+            e = pygame.event.Event(
+                pg.USEREVENT,
+                {'action': 'screenshot'}
+            )
+            pygame.event.post(e)
         self.pressed_key = None
 
 
@@ -531,7 +537,7 @@ class Game:
 
             # Ugly and CPU-intensive hack to prevents sprite/mask flickering
             # when moving the player around the screen without scrolling.
-            if not scrolled and self.player.animation:
+            if not scrolled and self.player.animation or pygame.event.peek():
                 self.screen.blit(self.background, (OFFSET_X, OFFSET_Y))
 
             # Don't clear overlays, only sprites.
@@ -570,6 +576,10 @@ class Game:
                     self.game_over = True
                 elif event.type == pg.KEYDOWN:
                     self.pressed_key = event.key
+                elif event.type == pg.USEREVENT:
+                    if event.action == 'screenshot':
+                        area = pygame.display.get_surface().subsurface(GET_CLIP_RECT())
+                        pygame.image.save(area, 'screenshot.png')
 
 
 if __name__ == "__main__":
