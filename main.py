@@ -24,10 +24,10 @@ DX = [0, 1, 0, -1]
 DY = [-1, 0, 1, 0]
 
 # Dimensions of the map tiles
-MAP_TILE_WIDTH, MAP_TILE_HEIGHT = 5, 5
+MAP_TILE_WIDTH, MAP_TILE_HEIGHT = 16, 16
 
 # Upscaling
-SCALE = 8
+SCALE = 2
 
 # Display mode
 DISPLAY_MODE = pygame.FULLSCREEN
@@ -39,7 +39,8 @@ def GET_DISPLAY_Y():
     return pygame.display.Info().current_h
 
 # Clipping area (actual game interface)
-CLIP_WIDTH, CLIP_HEIGHT = 80 * SCALE, 60 * SCALE
+CLIP_WIDTH = 640
+CLIP_HEIGHT = 480
 
 def GET_CLIP_RECT():
     return pygame.Rect(
@@ -227,7 +228,7 @@ class Player(Sprite):
         """Animation for the player walking."""
 
         def move_scaled(direction):
-            self.move(DX[direction] * SCALE/8, DY[direction] * SCALE/8)
+            self.move(DX[direction] * SCALE/8.0, DY[direction] * SCALE/8.0)
 
         # This animation is hardcoded for 4 frames
         for frame in range(4):
