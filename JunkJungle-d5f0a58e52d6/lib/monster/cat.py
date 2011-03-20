@@ -42,3 +42,8 @@ class Mob(monster.Monster):
         def animate(self, delay=1, frames=None):
             """Cat has more frames and facing."""
             sprite.Monster.animate(self, delay, self.frames[self.facing-1])
+
+        def anim_stand(self):
+            """Cat is not animated when standing."""
+            self.image = self.frames[self.facing-1][0]
+            yield None
