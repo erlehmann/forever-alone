@@ -33,33 +33,6 @@ class Mob(monster.Monster):
             dy = util.delta_y[self.facing]*2
             self.move(dx, dy)
             steps = 7
-            if self.facing == self.old_facing % 4+1:
-                # rotate CW
-                self.image = self.frames[self.facing-1+4][0]
-                self.frame = 0
-                yield None
-            elif self.facing == (self.old_facing-2) % 4+1:
-                # rotate CCW
-                self.image = self.frames[self.old_facing-1+4][0]
-                self.frame = 0
-                yield None
-            elif self.facing == (self.old_facing-3) % 4+1:
-                # turn back
-                self.image = self.frames[(self.facing+1) % 4+4][0]
-                yield None
-                self.move(dx, dy)
-                self.image = self.frames[self.facing % 4][0]
-                yield None
-                self.move(dx, dy)
-                self.image = self.frames[self.facing % 4+4][0]
-                self.frame = 0
-                yield None
-                steps = 5
-            else:
-                # just continue walking
-                self.animate()
-                yield None
-            self.old_facing = self.facing
             for step in range(steps):
                 self.move(dx, dy)
                 self.animate()
@@ -68,7 +41,6 @@ class Mob(monster.Monster):
         def anim_attack(self):
             """Player attacks first, no delay."""
             self.frame = 0
-            self.image = self.frames[self.facing-1+4][0]
             dx = util.delta_x[self.facing]*4
             dy = util.delta_y[self.facing]*4
             for step in range(2):
