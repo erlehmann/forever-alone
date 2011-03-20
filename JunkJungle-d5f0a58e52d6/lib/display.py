@@ -79,14 +79,22 @@ class Display:
 
         hscroll = 0
         vscroll = 0
-        if rect.left < 48:
-            hscroll = 3
-        if rect.right > self.screen.get_width()-48:
-            hscroll = -3
-        if rect.top < 48:
-            vscroll = 2
-        if rect.bottom > self.screen.get_height()-48:
-            vscroll = -2
+        if rect.left < 160:
+            hscroll = 1
+            if rect.left < 128:
+                hscroll = 2
+        if rect.right > self.screen.get_width()-160:
+            hscroll = -1
+            if rect.right > self.screen.get_width()-128:
+                hscroll = -2
+        if rect.top < 128:
+            vscroll = 1
+            if rect.top < 96:
+                vscroll = 2
+        if rect.bottom > self.screen.get_height()-128:
+            vscroll = -1
+            if rect.bottom > self.screen.get_height()-96:
+                vscroll = -2
         if hscroll or vscroll:
             self.scroll(hscroll, vscroll)
             self.refresh()
