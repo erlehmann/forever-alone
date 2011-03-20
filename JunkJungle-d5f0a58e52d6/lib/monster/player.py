@@ -29,7 +29,7 @@ class Mob(monster.Monster):
             yield None
 
         def anim_walk(self):
-            dx = util.delta_x[self.facing]*3
+            dx = util.delta_x[self.facing]*2
             dy = util.delta_y[self.facing]*2
             self.move(dx, dy)
             steps = 7
@@ -69,7 +69,7 @@ class Mob(monster.Monster):
             """Player attacks first, no delay."""
             self.frame = 0
             self.image = self.frames[self.facing-1+4][0]
-            dx = util.delta_x[self.facing]*6
+            dx = util.delta_x[self.facing]*4
             dy = util.delta_y[self.facing]*4
             for step in range(2):
                 self.move(dx, dy, 1)

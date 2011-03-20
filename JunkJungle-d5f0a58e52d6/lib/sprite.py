@@ -17,7 +17,7 @@ import util
 
 FRAMES_CACHE = {}
 
-def read_frames(filename, size=24, ysize=None):
+def read_frames(filename, size=16, ysize=None):
     """Read an image and split it into frames. Cache results. """
     if ysize is None:
         ysize = size
@@ -77,7 +77,7 @@ class Monster(pygame.sprite.Sprite):
         """Place the sprite in specified square of map."""
         self.x, self.y = pos
         self.depth = self.y*16-12
-        self.rect.midbottom = (self.x*24+12, self.y*16+12)
+        self.rect.midbottom = (self.x*16+8, self.y*16+12)
         #self.shadow.center(self)
 
     def move(self, dx, dy, dz=0):
@@ -120,7 +120,7 @@ class Monster(pygame.sprite.Sprite):
 
     def anim_walk(self):
         """Animation of the monster walking around"""
-        dx = util.delta_x[self.facing]*3
+        dx = util.delta_x[self.facing]*2
         dy = util.delta_y[self.facing]*2
         for step in range(8):
             self.move(dx, dy)
@@ -129,7 +129,7 @@ class Monster(pygame.sprite.Sprite):
 
     def anim_attack(self):
         """Aniamtion of the monster attacking something"""
-        dx = util.delta_x[self.facing]*6
+        dx = util.delta_x[self.facing]*4
         dy = util.delta_y[self.facing]*4
         # Wait for the player attack.
         for step in range(4):
@@ -151,7 +151,7 @@ class Monster(pygame.sprite.Sprite):
         for bubble in self.bubbles.itervalues():
             bubble.kill()
         for a, z in zip(range(255, 0, -34), range(8)):
-            self.image = saved.subsurface((0, 0, 24, 24-z*3))
+            self.image = saved.subsurface((0, 0, 16, 16-z*3))
             self.image.set_alpha(a)
             self.move(0, 0, -3)
             yield None
@@ -187,7 +187,7 @@ class Item(pygame.sprite.Sprite):
         self.x, self.y = pos
         self.depth = self.y*16-20
         self.on_floor = True
-        self.rect.center = (self.x*24+12, self.y*16+3)
+        self.rect.center = (self.x*16+8, self.y*16+3)
         #self.shadow.center(self)
 
     def move(self, dx, dy, dz=0):
@@ -228,7 +228,7 @@ class Item(pygame.sprite.Sprite):
 
     def anim_push(self, facing):
         """Animation of the item being pushed around"""
-        dx = util.delta_x[facing]*3
+        dx = util.delta_x[facing]*2
         dy = util.delta_y[facing]*2
         for step in range(8):
             self.move(dx, dy, 0)

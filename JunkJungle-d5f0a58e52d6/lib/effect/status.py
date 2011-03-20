@@ -31,7 +31,7 @@ class Bubble(pygame.sprite.Sprite):
         self.y += self.dy
         self.dy += self.ddy
         x, y = self.sprite.rect.center
-        self.rect.center = (x+self.offset, y-24+self.y)
+        self.rect.center = (x+self.offset, y-16+self.y)
         if self.dy>1 or self.dy<-1:
             self.ddy = -self.ddy
 

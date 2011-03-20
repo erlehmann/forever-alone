@@ -16,7 +16,7 @@ class Terrain(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.pos = pos
         self.depth = pos[1]
-        self.rect.left = pos[0]*24
+        self.rect.left = pos[0]*16
         self.rect.top = pos[1]*16
         self.rect.move_ip(display.scrollpos[0], display.scrollpos[1])
         self.display = display

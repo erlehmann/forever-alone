@@ -9,7 +9,7 @@ import terrain
 
 class Terrain(terrain.Terrain):
     frames = sprite.read_frames(os.path.join("lib", "terrain",
-                                                  "cliff.png"), 24, 16)
+                                                  "cliff.png"), 16, 16)
     def __init__(self, pos, display, level=None):
         self.image = self.frames[1][1]
         self.level = level
@@ -38,7 +38,7 @@ class Terrain(terrain.Terrain):
                 self.image = self.frames[1][1]
         if level.is_floor((x, y-1)):
             overlay = pygame.sprite.Sprite(self.display.overlay)
-            overlay.rect = pygame.rect.Rect(x*24, y*16-16, 24, 26)
+            overlay.rect = pygame.rect.Rect(x*16, y*16-16, 16, 26)
             if level.is_floor((x+1, y)) and level.is_floor((x-1, y)):
                 overlay.image = self.frames[3][0]
             elif level.is_floor((x+1, y)):

@@ -39,7 +39,7 @@ class Display:
     def draw_map(self, level, rect=None):
         """Draw the background based on the provided map."""
         cache = {}
-        background = pygame.Surface((level.w*24, level.h*16))
+        background = pygame.Surface((level.w*16, level.h*16))
         background.fill((0, 0, 0))
         if rect is None:
             rect = Rect(0, 0, level.w, level.h)
