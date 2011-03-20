@@ -20,4 +20,4 @@ class Shadow(pygame.sprite.Sprite):
 
     def update(self):
         x, y = self.sprite.rect.center
-        self.rect.center = (x, y+4+self.sprite.height-self.offset)
+        self.rect.center = (x, y+2+self.sprite.height-self.offset)
