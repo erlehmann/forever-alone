@@ -29,6 +29,15 @@ class Mob(monster.Monster):
         def __init__(self, monster, display):
             sprite.Monster.__init__(self, monster, display)
 
+        def animate(self, delay=1, frames=None):
+            """Cat has more frames and facing."""
+            sprite.Monster.animate(self, delay, self.frames[self.facing-1])
+
+        def anim_stand(self):
+            """Cat is not animated when standing."""
+            self.image = self.frames[self.facing-1][0]
+            yield None
+
         def anim_walk(self):
             dx = util.delta_x[self.facing]*2
             dy = util.delta_y[self.facing]*2
@@ -38,12 +47,3 @@ class Mob(monster.Monster):
                 self.move(dx, dy)
                 self.animate()
                 yield None
-
-        def animate(self, delay=1, frames=None):
-            """Cat has more frames and facing."""
-            sprite.Monster.animate(self, delay, self.frames[self.facing-1])
-
-        def anim_stand(self):
-            """Cat is not animated when standing."""
-            self.image = self.frames[self.facing-1][0]
-            yield None
