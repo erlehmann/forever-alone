@@ -52,7 +52,7 @@ class Mob(monster.Monster):
                 yield None
 
         def anim_die(self):
-            for d in (2, 6, 1, 5, 0, 4, 3, 7, 2):
+            for d in (2, 1, 0, 3, 2):
                 self.image = self.frames[d][0]
                 yield None
             self.shadow.kill()
