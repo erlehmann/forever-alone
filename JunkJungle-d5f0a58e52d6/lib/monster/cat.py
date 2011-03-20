@@ -3,6 +3,7 @@
 
 import random
 import monster
+import sprite
 import util
 
 class Mob(monster.Monster):
@@ -23,3 +24,21 @@ class Mob(monster.Monster):
                         return
             except monster.MoveError:
                 pass
+
+    class Sprite(sprite.Monster):
+        def __init__(self, monster, display):
+            sprite.Monster.__init__(self, monster, display)
+
+        def anim_walk(self):
+            dx = util.delta_x[self.facing]*2
+            dy = util.delta_y[self.facing]*2
+            self.move(dx, dy)
+            steps = 7
+            for step in range(steps):
+                self.move(dx, dy)
+                self.animate()
+                yield None
+
+        def animate(self, delay=1, frames=None):
+            """Cat has more frames and facing."""
+            sprite.Monster.animate(self, delay, self.frames[self.facing-1])
