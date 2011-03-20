@@ -12,7 +12,6 @@ class Bubble(pygame.sprite.Sprite):
     offset = 0
 
     def __init__(self, sprite):
-        self.image.set_alpha(128)
         self.sprite = sprite
         pygame.sprite.Sprite.__init__(self)
         self.rect = self.image.get_rect()
@@ -39,7 +38,7 @@ class Asleep(Bubble):
     """A 'sleeping' bubble."""
 
     name = 'asleep'
-    offset = 9
+    offset = 0
     image = pygame.image.load(os.path.join("lib", "effect",
                                            "asleep.png")).convert()
 
@@ -48,7 +47,7 @@ class Wounded(Bubble):
     """A 'bandaid' bubble."""
 
     name = 'wounded'
-    offset = -9
+    offset = 0
     image = pygame.image.load(os.path.join("lib", "effect",
                                            "wounded.png")).convert()
 
