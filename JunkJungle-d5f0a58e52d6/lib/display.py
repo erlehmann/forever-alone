@@ -25,7 +25,8 @@ class Display:
 
     def __init__(self):
         self.clock = pygame.time.Clock()
-        self.screen = pygame.display.get_surface()
+        self._screen = pygame.display.get_surface()
+        self.screen = pygame.Surface((320, 240))
         self.tiles = pygame.sprite.RenderUpdates()
         self.sprites = sprite.SortedUpdates()
         self.shadows = pygame.sprite.RenderUpdates()
@@ -79,21 +80,21 @@ class Display:
 
         hscroll = 0
         vscroll = 0
-        if rect.left < 160:
+        if rect.left < 80:
             hscroll = 1
-            if rect.left < 128:
+            if rect.left < 64:
                 hscroll = 2
-        if rect.right > self.screen.get_width()-160:
+        if rect.right > self.screen.get_width()-80:
             hscroll = -1
-            if rect.right > self.screen.get_width()-128:
+            if rect.right > self.screen.get_width()-64:
                 hscroll = -2
-        if rect.top < 128:
+        if rect.top < 64:
             vscroll = 1
-            if rect.top < 96:
+            if rect.top < 48:
                 vscroll = 2
-        if rect.bottom > self.screen.get_height()-128:
+        if rect.bottom > self.screen.get_height()-64:
             vscroll = -1
-            if rect.bottom > self.screen.get_height()-96:
+            if rect.bottom > self.screen.get_height()-48:
                 vscroll = -2
         if hscroll or vscroll:
             self.scroll(hscroll, vscroll)
@@ -108,6 +109,13 @@ class Display:
                                   self.shadows, self.overlay)
         for sprite in sprites:
             sprite.rect.move_ip(dx, dy)
+
+    def scale_rect(self, rect, factor):
+        rect.left *= factor
+        rect.top *= factor
+        rect.width *= factor
+        rect.height *= factor
+        return rect
 
     def clear_func(self, screen, rect):
         """
@@ -130,6 +138,9 @@ class Display:
         self.overlay.draw(self.screen)
         self.effects.draw(self.screen)
         self.hud.draw(self.screen)
+
+        double = pygame.transform.scale(self.screen, (640, 480))
+        self._screen.blit(double, (0, 0))
         pygame.display.flip()
 
     def update(self):
@@ -149,7 +160,11 @@ class Display:
         self.overlay.draw(self.screen)
         dirty += self.effects.draw(self.screen)
 #        dirty += self.hud.draw(self.screen)
-        pygame.display.update(dirty)
+
+        double = pygame.transform.scale(self.screen, (640, 480))
+        self._screen.blit(double, (0, 0))
+        pygame.display.flip()  # no dirty laundry
+        #pygame.display.update(dirty)
 
     def show_frame(self):
         """Process a single frame of the game loop."""
