@@ -7,4 +7,4 @@ import os
 import terrain
 
 class Terrain(terrain.Terrain):
-    image = pygame.image.load(os.path.join("lib", "terrain", "ground.png"))
+    image = pygame.image.load(os.path.join("lib", "terrain", "street.png"))
