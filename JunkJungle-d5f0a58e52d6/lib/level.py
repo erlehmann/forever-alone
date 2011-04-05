@@ -32,6 +32,9 @@ class Level(object):
         content = self.get_content(pos)
         return terrain in content
 
+    def is_building(self, pos):
+        return self.is_terrain(pos, "terrain.building")
+
     def is_street(self, pos):
         return self.is_terrain(pos, "terrain.street")
 
@@ -65,7 +68,7 @@ class StaticLevel(Level):
     def static_map(self):
         """A mockup of a level map."""
         self.map_key = {
-            "X": ("terrain.wall",),
+            "X": ("terrain.building",),
             "*": ("terrain.cliff",),
             ":": ("terrain.sidewalk",),
             ".": ("terrain.street",),
@@ -97,19 +100,19 @@ class StaticLevel(Level):
             "XX::::XXXX::::::X.*::::::X",
             "XX~:::....::/:::..*::::::X",
             "XX::::XXXX::::::***:::Z::X",
-            "XXX.XXXXXXXXX.*****::::::X",
-            "XXX...XXXXXXX.*******.XXXX",
-            "XXXXX.XXXX:%:::::****.XXXX",
-            "X::c:@::..::+::::**:::::XX",
+            "XXX:::XXXXXXX.*****::::::X",
+            "XXX:::XXXXXXX.*******.XXXX",
+            "XXX::.XXXX:%:::::****.XXXX",
+            "X::::@::..::+::::**:::::XX",
             "X:..::::..::V:E::..::!::XX",
-            "X:..:c::.....:>::XXO::::XX",
-            "X:..::::.....::::XX:::&:XX",
-            "X......:XXXXX.XXXXX:::::XX",
-            "X......:XXXXX.XXXXX:::::XX",
-            "X:..::::XXXXX.XXXXXXXX.XXX",
+            "X:..::::.....:>::XXO::::XX",
+            "::..:c:::::::::::XX:::&:XX",
+            "..............XXXXX:::::XX",
+            "..............XXXXX:::::XX",
+            "::..:::::::::.XXXXXXXX.XXX",
             "X:..:XXXXXXX..XXXXXXXX.XXX",
             "X:..:XXXXXXX.XXXXXXX:::::X",
-            "X::::::XXX::::XXXXXX::%::X",
+            "X::::XXXXX::::XXXXXX::%::X",
             "X::::::...::::XXXXXX:::::X",
             "X::::::XXX::::....XX::S::X",
             "XC:::::XXX::B:XXX.XX:::::X",
