@@ -12,7 +12,13 @@ class Mob(monster.Monster):
 
     def act(self, level):
         player = self.level.player
-        dirs = util.dir_of(self.pos, player.pos)
+
+        if util.dist(self.pos, player.pos) < 2 or \
+            self.wounded and util.dist(self.pos, player.pos) < 8:
+            dirs = util.dir_of(player.pos, self.pos)  # back off
+        else:
+            dirs = util.dir_of(self.pos, player.pos)  # follow player
+
         for direction in dirs:
             try:
                 try:
