@@ -15,7 +15,6 @@ pygame.display.set_caption("Junk Jungle")
 pygame.display.set_icon(pygame.image.load(os.path.join("lib", "effect", "icon.png")))
 
 import sprite
-import effect.gauge
 import terrain
 import effect.status
 
@@ -35,7 +34,6 @@ class Display:
         self.hud = pygame.sprite.RenderUpdates()
         self.scrollpos = [0, 0]
         self.key_pressed = None
-        self.hud.add(effect.gauge.Gauge(self))
 
     def draw_map(self, level, rect=None):
         """Draw the background based on the provided map."""
