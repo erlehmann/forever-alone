@@ -82,10 +82,10 @@ class Terrain(terrain.Terrain):
                 if level.is_street((x, y+1)):
                     # street S, no street: WE
                     if level.is_street((x, y-1)):
-                        # street NS, no street: WE
+                        # street: NS, no street: WE
                         pass
                     else:
-                        # street S, no street NWE
+                        # street: S, no street: NWE
                         self.image = self.frames[1][0]
                         
                 else:
