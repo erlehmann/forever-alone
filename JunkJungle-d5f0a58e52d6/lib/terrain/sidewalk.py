@@ -48,27 +48,15 @@ class Terrain(terrain.Terrain):
                         pass
                     else:
                         # street: SE, no street: NW
-                        if level.is_building((x-1, y-1)):
-                            # building at NW corner
-                            self.image = self.frames[5][2]
-                        else:
-                            self.image = self.frames[5][5]
+                        self.image = self.frames[5][2]
                 else:
                     # street: E, no street: SW
                     if level.is_street((x, y-1)):
                         # street: NE, no street: SW
-                        if level.is_building((x-1, y+1)):
-                            # building at SW corner
-                            self.image = self.frames[5][0]
-                        else:
-                            self.image = self.frames[5][3]
+                        self.image = self.frames[5][0]
                     else:
                         # street: E, no street: NSW
-                        if level.is_building((x-1, y)):
-                            # building: W
-                            self.image = self.frames[5][1]
-                        else:
-                            self.image = self.frames[5][4]
+                        self.image = self.frames[5][1]
         else:
             # no street: E
             if level.is_street((x-1, y)):
@@ -80,27 +68,15 @@ class Terrain(terrain.Terrain):
                         pass
                     else:
                         # street: SW, no street: NE
-                        if level.is_building((x+1, y-1)):
-                            # building at NE corner
-                            self.image = self.frames[3][2]
-                        else:
-                            self.image = self.frames[3][5]
+                        self.image = self.frames[3][2]
                 else:
                     # street: W, no street: SE
                     if level.is_street((x, y-1)):
                         # street: NW, no street: SE
-                        if level.is_building((x+1, y+1)):
-                            # building at SE corner
-                            self.image = self.frames[3][0]
-                        else:
-                            self.image = self.frames[3][3]
+                        self.image = self.frames[3][0]
                     else:
                         # street: W, no street: NSE
-                        if level.is_building((x+1, y)):
-                            # building: E
-                            self.image = self.frames[3][1]
-                        else:
-                            self.image = self.frames[3][4]
+                        self.image = self.frames[3][1]
             else:
                 # no street: WE
                 if level.is_street((x, y+1)):
@@ -110,24 +86,17 @@ class Terrain(terrain.Terrain):
                         pass
                     else:
                         # street S, no street NWE
-                        if level.is_building((x, y-1)):
-                            # building: N
-                            self.image = self.frames[1][0]
-                        else:
-                            self.image = self.frames[1][3]
+                        self.image = self.frames[1][0]
                         
                 else:
                     # no street: SWE
                     if level.is_street((x, y-1)):
                         # street: N, no street: SWE
-                        if level.is_building((x, y+1)):
-                            self.image = self.frames[1][2]
-                        else:
-                            self.image = self.frames[1][5]
+                        self.image = self.frames[1][2]
                     else:
                         # no street: NSWE
-                        if level.is_street((x-1, y-1)) and level.is_building((x+1, y+1)):
-                            # street corner, street is at NW, building at SE corner
+                        if level.is_street((x-1, y-1)):
+                            # street corner, street is at NW
                             self.image = self.frames[2][2]
                         elif level.is_street((x-1, y+1)):
                             # street corner, street is at SW
