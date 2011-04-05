@@ -56,7 +56,11 @@ class Terrain(terrain.Terrain):
                         self.image = self.frames[5][0]
                     else:
                         # street: E, no street: NSW
-                        self.image = self.frames[5][1]
+                        if level.is_building((x-1, y)):
+                            # building: W
+                            self.image = self.frames[5][1]
+                        else:
+                            self.image = self.frames[5][4]
         else:
             # no street: E
             if level.is_street((x-1, y)):
@@ -76,7 +80,11 @@ class Terrain(terrain.Terrain):
                         self.image = self.frames[3][0]
                     else:
                         # street: W, no street: NSE
-                        self.image = self.frames[3][1]
+                        if level.is_building((x+1, y)):
+                            # building: E
+                            self.image = self.frames[3][1]
+                        else:
+                            self.image = self.frames[3][4]
             else:
                 # no street: WE
                 if level.is_street((x, y+1)):
@@ -86,12 +94,20 @@ class Terrain(terrain.Terrain):
                         pass
                     else:
                         # street S, no street NWE
-                        self.image = self.frames[1][0]
+                        if level.is_building((x, y-1)):
+                            # building: N
+                            self.image = self.frames[1][0]
+                        else:
+                            self.image = self.frames[1][3]
+                        
                 else:
                     # no street: SWE
                     if level.is_street((x, y-1)):
                         # street: N, no street: SWE
-                        self.image = self.frames[1][2]
+                        if level.is_building((x, y+1)):
+                            self.image = self.frames[1][2]
+                        else:
+                            self.image = self.frames[1][5]
                     else:
                         # no street: NSWE
                         if level.is_street((x-1, y-1)):
