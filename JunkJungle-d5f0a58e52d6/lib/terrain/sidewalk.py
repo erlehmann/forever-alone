@@ -30,22 +30,22 @@ class Terrain(terrain.Terrain):
                         pass
                     else:
                         # street: SWE, no street: N
-                        pass
+                        self.image = self.frames[0][5]
                 else:
                     # street: WE, no street: S
                     if level.is_street((x, y-1)):
                         # street: NWE, no street: S
-                        pass
+                        self.image = self.frames[0][3]
                     else:
                         # street: WE, no street: NS
-                        pass
+                        self.image = self.frames[0][4]
             else:
                 # street: E, no street: W
                 if level.is_street((x, y+1)):
                     # street: SE, no street: W
                     if level.is_street((x, y-1)):
                         # street: NSE, no street: W
-                        pass
+                        self.image = self.frames[5][3]
                     else:
                         # street: SE, no street: NW
                         self.image = self.frames[5][2]
@@ -65,7 +65,7 @@ class Terrain(terrain.Terrain):
                     # street: SW, no street: E
                     if level.is_street((x, y-1)):
                         # street: NSW, no street: E
-                        pass
+                        self.image = self.frames[3][3]
                     else:
                         # street: SW, no street: NE
                         self.image = self.frames[3][2]
@@ -83,7 +83,7 @@ class Terrain(terrain.Terrain):
                     # street S, no street: WE
                     if level.is_street((x, y-1)):
                         # street: NS, no street: WE
-                        pass
+                        self.image = self.frames[4][3]
                     else:
                         # street: S, no street: NWE
                         self.image = self.frames[1][0]
