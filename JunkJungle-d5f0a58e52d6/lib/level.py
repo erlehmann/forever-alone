@@ -28,6 +28,13 @@ class Level(object):
         except IndexError:
             return True
 
+    def is_terrain(self, pos, terrain):
+        content = self.get_content(pos)
+        return terrain in content
+
+    def is_street(self, pos):
+        return self.is_terrain(pos, "terrain.street")
+
 class StaticLevel(Level):
     def __init__(self):
         self.static_map()
@@ -60,7 +67,7 @@ class StaticLevel(Level):
         self.map_key = {
             "X": ("terrain.wall",),
             "*": ("terrain.cliff",),
-            ":": ("terrain.floor",),
+            ":": ("terrain.sidewalk",),
             ".": ("terrain.street",),
             ",": ("terrain.corridor",),
             "O": ("terrain.floor", "monster.eye"),
@@ -74,7 +81,7 @@ class StaticLevel(Level):
             "V": ("terrain.floor", "monster.bat"),
             "@": ("terrain.floor", "monster.player", "item.up"),
             "&": ("terrain.floor", "item.box"),
-            "c": ("terrain.floor", "item.car"),
+            "c": ("terrain.sidewalk", "item.car"),
             "%": ("terrain.floor", "item.chest"),
             "/": ("terrain.floor", "item.wrench"),
             "!": ("terrain.floor", "item.hammer"),
@@ -88,26 +95,26 @@ class StaticLevel(Level):
             "XX::::XXXX:::R::X..::M:::X",
             "XX:V::XXXX::V:::X.*::::::X",
             "XX::::XXXX::::::X.*::::::X",
-            "XX~::@....::/:::..*::::::X",
+            "XX~:::....::/:::..*::::::X",
             "XX::::XXXX::::::***:::Z::X",
             "XXX.XXXXXXXXX.*****::::::X",
             "XXX...XXXXXXX.*******.XXXX",
             "XXXXX.XXXX:%:::::****.XXXX",
-            "X::c::::XX:::::::**:::::XX",
-            "X:::::::XX::V:E::..::!::XX",
-            "X::%:c::XX::::>::XXO::::XX",
-            "X::::+::..:::::::XX:::&:XX",
-            "X:::::::XXXXX.XXXXX:::::XX",
-            "X:::::::XXXXX.XXXXX:::::XX",
-            "X:::::M:XXXXX.XXXXXXXX.XXX",
-            "XX.XXXXXXXXX..XXXXXXXX.XXX",
-            "XX.XXXXXXXXX.XXXXXXX:::::X",
-            "X::::::XXX::::XXXXXX:::::X",
+            "X::c:@::..::+::::**:::::XX",
+            "X:..::::..::V:E::..::!::XX",
+            "X:..:c::.....:>::XXO::::XX",
+            "X:..::::.....::::XX:::&:XX",
+            "X......:XXXXX.XXXXX:::::XX",
+            "X......:XXXXX.XXXXX:::::XX",
+            "X:..::::XXXXX.XXXXXXXX.XXX",
+            "X:..:XXXXXXX..XXXXXXXX.XXX",
+            "X:..:XXXXXXX.XXXXXXX:::::X",
+            "X::::::XXX::::XXXXXX::%::X",
             "X::::::...::::XXXXXX:::::X",
             "X::::::XXX::::....XX::S::X",
             "XC:::::XXX::B:XXX.XX:::::X",
             "X::::::XXXXXXXXXX...:::::X",
-            "X::::::XXXXXXXXXXXXX:::::X",
+            "X::::M:XXXXXXXXXXXXX:::::X",
             "XXXXXXXXXXXXXXXXXXXXXXXXXX",
         )
         self.blocking = []
