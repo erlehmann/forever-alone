@@ -38,6 +38,9 @@ class Level(object):
     def is_street(self, pos):
         return self.is_terrain(pos, "terrain.street")
 
+    def is_sidewalk(self, pos):
+        return self.is_terrain(pos, "terrain.sidewalk")
+
 class StaticLevel(Level):
     def __init__(self):
         self.static_map()
